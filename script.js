@@ -41,8 +41,30 @@ function playRound(playerSelection, computerSelection) {
   else return "draw";
 }
 
-const playerSelection = "ScissoRs";
-const computerSelection = getComputerChoice();
-console.log(playRound(playerSelection, computerSelection));
+// none -> String
+// play 5 rounds of RPS and returns a message telling you if you won or lost
 
+function playGame() {
+  userScore = 0;
+  pcScore = 0;
 
+  for (let i = 0; i < 5; i++) {
+    const playerSelection = prompt(
+      "rock, paper or scissors?",
+      "rock"
+    ).toLowerCase();
+    const computerSelection = getComputerChoice();
+    const round = playRound(playerSelection, computerSelection);
+    console.log(i + 1);
+    console.log(round);
+
+    if (round === `you lost! ${computerSelection} beats ${playerSelection}`)
+      pcScore += 1;
+    else if (round === `you won! ${playerSelection} beats ${computerSelection}`)
+      userScore += 1;
+  }
+
+  if (userScore === pcScore) return `you draw ${userScore} to ${pcScore}`;
+  else if (userScore >= pcScore) return `you won ${userScore} to ${pcScore}`;
+  else if (userScore <= pcScore) return `you lost ${userScore} to ${pcScore}`;
+}
