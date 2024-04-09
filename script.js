@@ -31,40 +31,75 @@ function playRound(playerSelection, computerSelection) {
     (ps === "paper" && cs === "scissors") ||
     (ps === "scissors" && cs === "rock")
   )
-    return `you lost! ${cs} beats ${ps}`;
+    return 'lose';
   else if (
     (ps === "rock" && cs === "scissors") ||
     (ps === "paper" && cs === "rock") ||
     (ps === "scissors" && cs === "paper")
   )
-    return `you won! ${ps} beats ${cs}`;
+    return 'win';
   else return "draw";
 }
 
-// none -> String
-// play 5 rounds of RPS and returns a message telling you if you won or lost
 
 function playGame() {
-  userScore = 0;
-  pcScore = 0;
+  let userScore = 0,
+    pcScore = 0;
 
-  for (let i = 0; i < 5; i++) {
-    const playerSelection = prompt(
-      "rock, paper or scissors?",
-      "rock"
-    ).toLowerCase();
-    const computerSelection = getComputerChoice();
-    const round = playRound(playerSelection, computerSelection);
-    console.log(i + 1);
-    console.log(round);
+  const buttons = document.querySelectorAll('button');
+  const results = document.getElementById('results');
+  const score = document.createElement('p');
+  const round = document.createElement('p');
 
-    if (round === `you lost! ${computerSelection} beats ${playerSelection}`)
-      pcScore += 1;
-    else if (round === `you won! ${playerSelection} beats ${computerSelection}`)
-      userScore += 1;
-  }
+  updateScore();
+  results.appendChild(score);
+  results.appendChild(round);
 
-  if (userScore === pcScore) return `you draw ${userScore} to ${pcScore}`;
-  else if (userScore >= pcScore) return `you won ${userScore} to ${pcScore}`;
-  else if (userScore <= pcScore) return `you lost ${userScore} to ${pcScore}`;
+  buttons.forEach(button => {
+    button.addEventListener('click', () => {
+      const playerSelection = button.id;
+      const computerSelection = getComputerChoice();
+
+      let currentRound = playRound(playerSelection, computerSelection);
+
+      if (currentRound === "win") {
+        userScore += 1;
+      } else if (currentRound === "lose") {
+        pcScore += 1;
+      }
+
+      updateScore();
+      updateRound();
+
+      if (userScore === 5) {
+        endGame("You win!");
+        userScore = 0;
+        pcScore = 0;
+      } else if (pcScore === 5) {
+        endGame("You lose!");
+        userScore = 0;
+        pcScore = 0;
+      }
+      
+
+      function updateRound() {
+        round.textContent = `${playerSelection} vs ${computerSelection}, you ${currentRound}`;
+      }
+
+      function endGame(message) {
+        round.textContent = message;
+        buttons.forEach(button => {
+          button.removeEventListener('click', () => { });
+        });
+      }
+
+    });
+    
+  });
+function updateScore() {
+        score.textContent = `You: ${userScore} - CPU: ${pcScore}`;
+      }
+
 }
+
+
